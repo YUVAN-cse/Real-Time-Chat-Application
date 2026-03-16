@@ -1,0 +1,123 @@
+/* src/components/User.css */
+
+.chat-user-preview {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  cursor: pointer;
+  border-radius: 12px;
+  margin-bottom: 2px;
+  transition: background-color 0.15s ease;
+  position: relative;
+  gap: 12px;
+}
+
+.chat-user-preview:hover {
+  background-color: #f0f2f5;
+}
+
+.chat-user-preview.selected {
+  background-color: #dcfce7;
+}
+
+.chat-user-preview.selected:hover {
+  background-color: #bbf7d0;
+}
+
+/* ── Avatar ── */
+.avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  border: 2px solid #e9ecef;
+}
+
+.chat-user-preview.selected .avatar {
+  border-color: #22c55e;
+}
+
+/* Green dot for online status */
+.online-dot {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  width: 11px;
+  height: 11px;
+  background-color: #22c55e;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+}
+
+/* ── Info ── */
+.chat-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3px;
+}
+
+.chat-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chat-name.online {
+  color: #16a34a;
+}
+
+.online-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #22c55e;
+  background-color: #f0fdf4;
+  padding: 2px 7px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+/* ── Bottom row ── */
+.chat-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-message {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+.chat-unread-badge {
+  background-color: #25d366;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 20px;
+  min-width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
