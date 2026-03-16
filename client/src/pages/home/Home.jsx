@@ -1,41 +1,56 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Sidebar from './Sidebar'
 import Mainbar from './Mainbar'
-import { useDispatch } from 'react-redux'
-import { initializeSocket } from '../../features/socket/socket.slice'
+import { useDispatch, useSelector } from 'react-redux'
+import { initializeSocket, disconnectSocket, getSocket } from '../../features/socket/socket.slice'
 import { updateOnlineUsers } from '../../features/socket/socket.slice'
 import { setNewMessage } from '../../features/message/message.slice'
-import { useEffect } from 'react'
-import { useSelector } from 'react-redux'
 import { getAllUsersThunk } from '../../features/user/user.thunk'
 
 const Home = () => {
 
     const dispatch = useDispatch()
     let { isAuthenticated, userProfile } = useSelector(state => state.user)
-    let { socket } = useSelector(state => state.socket)
 
+    // ✅ Removed: let { socket } = useSelector(state => state.socket)
+    // Socket is no longer in Redux — read via getSocket()
+
+    // 1️⃣ Initialize socket when user logs in
     useEffect(() => {
-        if (!isAuthenticated) return;
-        dispatch(initializeSocket(userProfile?.data?._id))
+        if (!isAuthenticated) return
+        if (!userProfile?._id) return   
+        dispatch(initializeSocket(userProfile?._id))
     }, [isAuthenticated, userProfile])
 
+    // 2️⃣ Fetch all users once on mount
     useEffect(() => {
         dispatch(getAllUsersThunk())
     }, [dispatch])
 
+    // 3️⃣ Attach socket listeners after socket is initialized
     useEffect(() => {
-        if (!socket) return
-        socket.on("onlineUsers", (data) => {
-            dispatch(updateOnlineUsers(data))
-        })
-        socket.on("message", (data) => {
-            dispatch(setNewMessage(data))
-        })
+        if (!isAuthenticated) return
+
+        // Small delay to ensure initializeSocket thunk has run first
+        const timeout = setTimeout(() => {
+            const socket = getSocket()
+            if (!socket) return
+
+            socket.on('onlineUsers', (data) => {
+                dispatch(updateOnlineUsers(data))
+            })
+
+            socket.on('message', (data) => {
+                dispatch(setNewMessage(data))
+            })
+        }, 0)
+
         return () => {
-            socket.close()
+            clearTimeout(timeout)
+            dispatch(disconnectSocket())
         }
-    }, [socket])
+
+    }, [isAuthenticated])  // ✅ Depends on isAuthenticated, not socket object
 
     return (
         <div
@@ -85,7 +100,6 @@ const Home = () => {
                     </span>
                 </div>
 
-                {/* Spacer */}
                 <div style={{ flex: 1 }} />
 
                 {/* User avatar (top-right) */}
@@ -126,7 +140,6 @@ const Home = () => {
                 className="row g-0"
                 style={{ flex: 1, height: '90vh', overflow: 'hidden' }}
             >
-                {/* Sidebar */}
                 <div
                     className="col-4"
                     style={{
@@ -139,7 +152,6 @@ const Home = () => {
                     <Sidebar />
                 </div>
 
-                {/* Mainbar */}
                 <div
                     className="col-8"
                     style={{
