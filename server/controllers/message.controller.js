@@ -7,7 +7,6 @@ import ApiResponse from "../utils/ApiResponse.js";
 import { io, socketMap } from "../socket/socket.js";
 
 
-// ===================== SEND MESSAGE =====================
 export const sendMessage = WrapAsync(async (req, res, next) => {
     const senderId = req.user.id;
     const receiverId = req.params.receiverId;
